@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3D Calculator</title>
+  <style>
+    :root {
+  --bg: #fff5f2;
+  --text: #333;
+  --btn-bg: #ffd7ba;
+  --btn-text: #000;
+  --display-bg: #ffe5d9;
+  --accent: #fec89a;
+  --clear: #fec5bb;
+  --shadow-dark: rgba(0, 0, 0, 0.2);
+}
+
+
+body.dark {
+  --bg: #1e1e1e;
+  --text: #f5f5f5;
+  --btn-bg: #2c2c2c;
+  --btn-text: #f5f5f5;
+  --display-bg: #121212;
+  --accent: #81c784;   /* Muted green */
+  --clear: #ef5350;    /* Softer red */
+  --shadow-dark: rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+  color: var(--text);
+  margin: 0;
+}
+
+
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .calculator {
+      width: 320px;
+      padding: 20px;
+      border-radius: 20px;
+      background: var(--bg);
+      box-shadow: 
+        8px 8px 20px var(--shadow-dark),
+        -8px -8px 20px rgba(213, 11, 11, 0.1);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .toggle-mode {
+      background: #888;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .display {
+      background: var(--display-bg);
+      color: var(--text);
+      font-size: 1.8rem;
+      padding: 10px 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      text-align: right;
+      height: 50px;
+      overflow: hidden;
+      white-space: nowrap;
+      word-break: break-all;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .buttons button {
+      padding: 18px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.2s;
+      box-shadow: 
+        2px 2px 6px var(--shadow-dark),
+        -2px -2px 4px rgba(255,255,255,0.05);
+    }
+
+    .buttons button:active {
+      transform: translateY(2px);
+      box-shadow: inset 2px 2px 5px var(--shadow-dark);
+    }
+
+    .equal {
+      background: var(--accent);
+      color: white;
+      grid-column: span 2;
+    }
+
+    .clear {
+      background: var(--clear);
+      color: white;
+    }
+
+    .zero {
+      grid-column: span 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="top-bar">
+      <h2>Calculator</h2>
+      <button class="toggle-mode" onclick="toggleMode()">Toggle Mode</button>
+    </div>
+    <div id="display" class="display">0</div>
+    <div class="buttons">
+      <button class="clear" onclick="clearDisplay()">C</button>
+      <button onclick="append('/')">÷</button>
+      <button onclick="append('*')">×</button>
+      <button onclick="append('-')">−</button>
+
+      <button onclick="append('7')">7</button>
+      <button onclick="append('8')">8</button>
+      <button onclick="append('9')">9</button>
+      <button onclick="append('+')">+</button>
+
+      <button onclick="append('4')">4</button>
+      <button onclick="append('5')">5</button>
+      <button onclick="append('6')">6</button>
+      <button class="equal" onclick="calculate()">=</button>
+
+      <button onclick="append('1')">1</button>
+      <button onclick="append('2')">2</button>
+      <button onclick="append('3')">3</button>
+      <button onclick="append('.')">.</button>
+
+      <button class="zero" onclick="append('0')">0</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById("display");
+
+    function append(value) {
+      if (display.textContent === "0" || display.textContent === "Error") {
+        display.textContent = value;
+      } else {
+        display.textContent += value;
+      }
+    }
+
+    function clearDisplay() {
+      display.textContent = "0";
+    }
+
+    function calculate() {
+      try {
+        display.textContent = eval(display.textContent);
+      } catch {
+        display.textContent = "Error";
+      }
+    }
+
+    // Handle keyboard input
+    document.addEventListener("keydown", function (e) {
+      const key = e.key;
+
+      if (key.match(/[0-9+\-*/.]/)) {
+        append(key);
+      } else if (key === "Enter" || key === "=") {
+        e.preventDefault();
+        calculate();
+      } else if (key === "Backspace") {
+        const txt = display.textContent;
+        display.textContent = txt.length > 1 ? txt.slice(0, -1) : "0";
+      } else if (key.toLowerCase() === "c") {
+        clearDisplay();
+      }
+    });
+
+    function toggleMode() {
+      document.body.classList.toggle("dark");
+    }
+  </script>
+</body>
+</html>
